@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "taller-mecanico-587b7": {
+      "hosting": {
+        "Desafio2": [
+          "taller-mecanico-587b7"
+        ]
+      }
+    }
+  }
+}
