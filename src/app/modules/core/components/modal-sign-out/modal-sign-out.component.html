@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>Cerrar Sesión</h2>
+<mat-dialog-content>
+  <h3>¿Estás seguro de cerrar la sesión de tu cuenta?</h3>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-raised-button [mat-dialog-close]="false">
+    <mat-icon class="ic">highlight_off</mat-icon>Cancelar
+  </button>
+  <button
+    mat-raised-button
+    [mat-dialog-close]="true"
+    color="primary"
+    cdkFocusInitial
+  >
+    <mat-icon class="ic">check_circle_outline</mat-icon>Aceptar
+  </button>
+</mat-dialog-actions>
