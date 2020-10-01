@@ -1,0 +1,160 @@
+<mat-toolbar>
+  <mat-toolbar-row>
+    <span class="title"
+      ><mat-icon class="iconlog">build</mat-icon>Taller Mecánico</span
+    >
+  </mat-toolbar-row>
+</mat-toolbar>
+<br />
+<br />
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-6 col-md-6 col-xl-6 col-sm-12 col-12">
+      <mat-tab-group mat-align-tabs="center">
+        <mat-tab label="Iniciar Sesión">
+          <br />
+          <br />
+          <h1 class="text-center title">Iniciar Sesión</h1>
+          <br />
+          <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+            <mat-form-field appearance="outline" class="imp">
+              <mat-label>Correo Electrónico</mat-label>
+              <input
+                type="text"
+                matInput
+                placeholder="Ej: juan@gmail.com"
+                formControlName="email"
+                autocomplete="off"
+              />
+              <mat-icon matSuffix>mail_outline</mat-icon>
+              <mat-error *ngIf="isFieldValid1('email')" class="error">{{
+                getErrorMessage1("email")
+              }}</mat-error>
+            </mat-form-field>
+            <br />
+            <br />
+            <mat-form-field appearance="outline" class="imp">
+              <mat-label>Contraseña</mat-label>
+              <input
+                matInput
+                [type]="hide1 ? 'password' : 'text'"
+                autocomplete="off"
+                formControlName="password"
+                maxlength="16"
+              />
+              <button mat-icon-button matSuffix (click)="hide1 = !hide1">
+                <ng-container *ngIf="hide1 == true; else elseTemplate">
+                  <mat-icon>visibility_off</mat-icon>
+                </ng-container>
+                <ng-template #elseTemplate>
+                  <mat-icon>visibility</mat-icon>
+                </ng-template>
+              </button>
+              <mat-error *ngIf="isFieldValid1('password')">{{
+                getErrorMessage1("password")
+              }}</mat-error>
+            </mat-form-field>
+            <br />
+            <br />
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="!loginForm.valid"
+            >
+              <mat-icon class="tip">input</mat-icon>Ingresar
+            </button>
+          </form>
+          <br />
+          <button mat-flat-button (click)="onLoginGoogle()">
+            <mat-icon class="tip">public</mat-icon>Ingresar con cuenta
+            de Google
+          </button>
+          <br />
+          <br />
+          <button mat-raised-button [routerLink]="['/forgot-password']">
+            <mat-icon class="tip">vpn_key</mat-icon>Recuperar Contraseña
+          </button>
+        </mat-tab>
+        <mat-tab label="Registrarse">
+          <br />
+          <br />
+          <h1 class="text-center title">Registrarse</h1>
+          <br />
+          <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
+            <mat-form-field appearance="outline" class="imp">
+              <mat-label>Correo Electrónico</mat-label>
+              <input
+                type="text"
+                matInput
+                placeholder="Ej: juan@gmail.com"
+                formControlName="email"
+                autocomplete="off"
+              />
+              <mat-icon matSuffix>mail_outline</mat-icon>
+              <mat-error *ngIf="isFieldValid2('email')" class="error">{{
+                getErrorMessage2("email")
+              }}</mat-error>
+            </mat-form-field>
+            <br />
+            <br />
+            <mat-form-field appearance="outline" class="imp">
+              <mat-label>Contraseña</mat-label>
+              <input
+                matInput
+                [type]="hide2 ? 'password' : 'text'"
+                autocomplete="off"
+                formControlName="password"
+                maxlength="16"
+              />
+              <button mat-icon-button matSuffix (click)="hide2 = !hide2">
+                <ng-container *ngIf="hide2 == true; else elseTemplate">
+                  <mat-icon>visibility_off</mat-icon>
+                </ng-container>
+                <ng-template #elseTemplate>
+                  <mat-icon>visibility</mat-icon>
+                </ng-template>
+              </button>
+              <mat-error *ngIf="isFieldValid2('password')">{{
+                getErrorMessage2("password")
+              }}</mat-error>
+            </mat-form-field>
+            <br />
+            <br />
+            <mat-form-field appearance="outline" class="imp">
+              <mat-label>Confirmar Contraseña</mat-label>
+              <input
+                matInput
+                [type]="hide3 ? 'password' : 'text'"
+                autocomplete="off"
+                formControlName="passwordConfirm"
+                maxlength="16"
+              />
+              <button mat-icon-button matSuffix (click)="hide3 = !hide3">
+                <ng-container *ngIf="hide3 == true; else elseTemplate">
+                  <mat-icon>visibility_off</mat-icon>
+                </ng-container>
+                <ng-template #elseTemplate>
+                  <mat-icon>visibility</mat-icon>
+                </ng-template>
+              </button>
+              <mat-error *ngIf="isFieldValid2('passwordConfirm')">{{
+                getErrorMessage2("passwordConfirm")
+              }}</mat-error>
+            </mat-form-field>
+            <br />
+            <br />
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              [disabled]="!registerForm.valid"
+            >
+              <mat-icon class="tip">person_add</mat-icon>Registrar
+            </button>
+          </form>
+        </mat-tab>
+      </mat-tab-group>
+    </div>
+  </div>
+</div>
