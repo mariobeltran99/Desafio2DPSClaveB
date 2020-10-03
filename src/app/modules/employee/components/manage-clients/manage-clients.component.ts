@@ -19,6 +19,7 @@ import { ModalDeleteClientComponent } from '../modal-delete-client/modal-delete-
 export class ManageClientsComponent implements OnInit {
   clientForm: FormGroup;
   createMode: boolean = true;
+  filterPost = '';
   constructor(
     private fb: FormBuilder,
     private clientServices: ClientsService,

@@ -79,6 +79,26 @@
   <br />
   <br />
   <div class="row justify-content-center">
+    <div class="col-12 col-lg-6 col-xl-6 col-md-6 col-sm-12">
+      <mat-card>
+        <h1 class="title">Búsquedas</h1>
+          <mat-form-field appearance="outline" class="imp">
+            <mat-label>Búsqueda por Nombre, Costo o Total a Pagar</mat-label>
+            <input
+              type="text"
+              matInput
+              placeholder="Ej: Juan Gómez ó 48.82"
+              autocomplete="off"
+              [(ngModel)]="filterPost"
+            />
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+      </mat-card>
+    </div>
+  </div>
+  <br>
+  <br>
+  <div class="row justify-content-center">
     <div class="col-12 col-lg-12 col-xl-12 col-md-12 col-sm-12">
       <ng-container *ngIf="repairs.length != 0; else elseTemplate">
         <div class="table-responsive">
@@ -99,7 +119,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let i of repairs">
+              <tr *ngFor="let i of repairs | filter:filterPost">
                 <td>{{ i.name }}</td>
                 <td>{{ i.dui }}</td>
                 <td>{{ i.marca }}</td>

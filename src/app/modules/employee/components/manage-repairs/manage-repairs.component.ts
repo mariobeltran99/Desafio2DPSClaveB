@@ -29,6 +29,7 @@ export class ManageRepairsComponent implements OnInit {
   repairName = null;
   descrep: number = 0;
   visible: boolean = false;
+  filterPost = '';
   constructor(
     private fb: FormBuilder,
     private dialog: MatDialog,

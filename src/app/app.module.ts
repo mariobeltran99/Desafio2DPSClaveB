@@ -30,9 +30,8 @@ import { ModalSignOutComponent } from './modules/core/components/modal-sign-out/
 import { ForgotPasswordComponent } from './modules/auth/components/forgot-password/forgot-password.component';
 import { ModalDeleteClientComponent } from './modules/employee/components/modal-delete-client/modal-delete-client.component';
 import { ModalDeleteRepairsComponent } from './modules/employee/components/modal-delete-repairs/modal-delete-repairs.component';
-
-
-
+import { FilterPipe } from './modules/employee/pipes/filter.pipe';
+import { FilterNamePipe } from './modules/employee/pipes/filter-name.pipe';
 @NgModule({
   declarations: [
     AppComponent,
@@ -44,7 +43,9 @@ import { ModalDeleteRepairsComponent } from './modules/employee/components/modal
     ModalSignOutComponent,
     ForgotPasswordComponent,
     ModalDeleteClientComponent,
-    ModalDeleteRepairsComponent
+    ModalDeleteRepairsComponent,
+    FilterPipe,
+    FilterNamePipe
   ],
   imports: [
     BrowserModule,
