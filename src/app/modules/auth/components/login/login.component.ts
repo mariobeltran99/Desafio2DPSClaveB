@@ -120,7 +120,7 @@ export class LoginComponent implements OnInit {
       const {email,password} = this.loginForm.value;
       this.authServices.login(email,password).then(respond => {
         this.resetLoginForm();
-        this.router.navigate(['/employee']);
+        this.router.navigate(['/employee/manage-clients']);
       }).catch(ex => {
         this.toastr.warning('Pueda que no exista el usuario ingresado','Advertencia');
       })
@@ -128,7 +128,7 @@ export class LoginComponent implements OnInit {
   }
   onLoginGoogle() {
     this.authServices.loginGoogle().then(respond => {
-      this.router.navigate(['/employee']);
+      this.router.navigate(['/employee/manage-clients']);
     }).catch(ex => {
       this.toastr.warning('Hay problemas con el proveedor de Google, vuelva a intentarlo nuevamente','Advertencia');
     })
@@ -139,7 +139,7 @@ export class LoginComponent implements OnInit {
       if(password == passwordConfirm){
         this.authServices.register(email,password).then(respond => {
           this.resetRegisterForm();
-          this.router.navigate(['/employee']);
+          this.router.navigate(['/employee/manage-clients']);
         }).catch(ex => {})
       }else{
         this.toastr.warning('Las contraseñas no coinciden','Advertencia');

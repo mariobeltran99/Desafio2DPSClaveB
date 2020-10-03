@@ -3,11 +3,30 @@
       [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
       [mode]="(isHandset$ | async) ? 'over' : 'side'"
       [opened]="(isHandset$ | async) === false">
-    <mat-toolbar>Menu</mat-toolbar>
+    <mat-toolbar>Menú</mat-toolbar>
     <mat-nav-list>
-      <a mat-list-item href="#">Link 1</a>
-      <a mat-list-item href="#">Link 2</a>
-      <a mat-list-item href="#">Link 3</a>
+      <br>
+      <h1 class="title">Empleado</h1>
+      <br>
+      <ng-container *ngIf="user$ | async as user; else elseTemplate">
+        <ng-container *ngIf="user?.photoURL == null; else elseT">
+          <img src="../../../../../assets/img/profile.png" class="imgUser">
+        </ng-container>
+        <ng-template #elseT>
+          <img src='{{ user?.photoURL }}' class="imgUser">
+        </ng-template>
+      </ng-container>
+      <ng-template #elseTemplate>
+        <img src="../../../../../assets/img/profile.png" class="imgUser">
+      </ng-template>
+      <br>
+      <br>
+      <p class="subtitle" *ngIf="user$ | async as user">{{ user?.email }}</p>
+      <br>
+      <br>
+      <a mat-list-item (click)="showManageClient()"><mat-icon class="tip">supervisor_account</mat-icon> Clientes</a>
+      <a mat-list-item (click)="showManageRepair()"><mat-icon class="tip">build</mat-icon> Administrar Reparaciones</a>
+      <a mat-list-item (click)="onSignOut()"><mat-icon class="tip">meeting_room</mat-icon> Cerrar Sesión</a>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
@@ -20,8 +39,9 @@
         *ngIf="isHandset$ | async">
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
-      <span>Desafio2</span>
+      <span>Taller Mecánico</span>
     </mat-toolbar>
     <!-- Add Content Here -->
+    <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>

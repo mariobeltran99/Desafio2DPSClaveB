@@ -1,1 +1,170 @@
-<p>manage-clients works!</p>
+<div class="container contains">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-6 col-xl-6 col-md-6 col-sm-12">
+      <mat-card>
+        <h1 class="title">Formulario de Cliente</h1>
+        <h2>Datos Personales</h2>
+        <form [formGroup]="clientForm">
+          <mat-form-field appearance="outline" class="imp">
+            <mat-label>Nombre</mat-label>
+            <input
+              type="text"
+              matInput
+              placeholder="Ej: Carlos Gómez"
+              formControlName="name"
+              autocomplete="off"
+            />
+            <mat-icon matSuffix>contacts</mat-icon>
+            <mat-error *ngIf="isFieldValid1('name')" class="error">{{
+              getErrorMessage1("name")
+            }}</mat-error>
+          </mat-form-field>
+          <br />
+          <br />
+          <mat-form-field appearance="outline" class="imp">
+            <mat-label>DUI</mat-label>
+            <input
+              matInput
+              type="text"
+              autocomplete="off"
+              placeholder="Ej: 14547885-5"
+              formControlName="dui"
+            />
+            <mat-icon matSuffix>featured_play_list</mat-icon>
+            <mat-error *ngIf="isFieldValid1('dui')">{{
+              getErrorMessage1("dui")
+            }}</mat-error>
+          </mat-form-field>
+          <br />
+          <br />
+          <h2>Vehículo</h2>
+          <mat-form-field appearance="outline" class="imp">
+            <mat-label>Marca</mat-label>
+            <input
+              type="text"
+              matInput
+              placeholder="Ej: Toyota"
+              formControlName="marca"
+              autocomplete="off"
+            />
+            <mat-icon matSuffix>font_download</mat-icon>
+            <mat-error *ngIf="isFieldValid1('marca')" class="error">{{
+              getErrorMessage1("marca")
+            }}</mat-error>
+          </mat-form-field>
+          <br />
+          <br />
+          <mat-form-field appearance="outline" class="imp">
+            <mat-label>Modelo</mat-label>
+            <input
+              type="text"
+              matInput
+              placeholder="Ej: Corola"
+              formControlName="model"
+              autocomplete="off"
+            />
+            <mat-icon matSuffix>colorize</mat-icon>
+            <mat-error *ngIf="isFieldValid1('model')" class="error">{{
+              getErrorMessage1("model")
+            }}</mat-error>
+          </mat-form-field>
+          <br />
+          <br />
+          <ng-container *ngIf="createMode == true; else elseTemp">
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="onSave()"
+              [disabled]="!clientForm.valid"
+            >
+              <mat-icon class="tip">save</mat-icon>Guardar Cliente
+            </button>
+          </ng-container>
+          <ng-template #elseTemp>
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="onEdit()"
+              [disabled]="!clientForm.valid"
+            >
+              <mat-icon class="tip">create</mat-icon>Modificar Cliente
+            </button>
+          </ng-template>
+        </form>
+      </mat-card>
+    </div>
+  </div>
+  <br />
+  <br />
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-6 col-xl-6 col-md-6 col-sm-12">
+      <mat-card>
+        <h1 class="title">Búsquedas</h1>
+          <mat-form-field appearance="outline" class="imp">
+            <mat-label>Búsqueda por Nombre</mat-label>
+            <input
+              type="text"
+              matInput
+              placeholder="Ej: Juan Gómez"
+              autocomplete="off"
+              [(ngModel)]="filterPost"
+            />
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+      </mat-card>
+    </div>
+  </div>
+  <br>
+  <br>
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-12 col-xl-12 col-md-12 col-sm-12">
+      <ng-container *ngIf="clients.length != 0; else elseTemplate">
+        <div class="table-responsive">
+          <table class="table table-hover table-dark">
+            <thead>
+              <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">DUI</th>
+                <th scope="col">Marca</th>
+                <th scope="col">Modelo</th>
+                <th scope="col">Visitas</th>
+                <th scope="col">Editar</th>
+                <th scope="col">Eliminar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let i of clients | filterName:filterPost">
+                <td>{{ i.name }}</td>
+                <td>{{ i.dui }}</td>
+                <td>{{ i.marca }}</td>
+                <td>{{ i.model }}</td>
+                <td>{{ i.visit }}</td>
+                <td>
+                  <button
+                    mat-flat-button
+                    color="primary"
+                    (click)="editClient(i)"
+                  >
+                    <mat-icon>create</mat-icon>
+                  </button>
+                </td>
+                <td>
+                  <button
+                    mat-flat-button
+                    color="warn"
+                    (click)="deleteClient(i.id)"
+                  >
+                    <mat-icon>delete_sweep</mat-icon>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-container>
+      <ng-template #elseTemplate>
+        <h1 class="title">No hay clientes registrados.</h1>
+      </ng-template>
+    </div>
+  </div>
+</div>

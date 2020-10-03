@@ -11,6 +11,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
 
 const MaterialComponents = [
   MatButtonModule,
@@ -23,15 +24,13 @@ const MaterialComponents = [
   MatListModule,
   MatCardModule,
   MatDialogModule,
-  MatProgressSpinnerModule
+  MatProgressSpinnerModule,
+  MatSelectModule,
 ];
 
 @NgModule({
   declarations: [],
-  imports: [
-    CommonModule,
-    MaterialComponents
-  ],
-  exports: [MaterialComponents]
+  imports: [CommonModule, MaterialComponents],
+  exports: [MaterialComponents],
 })
 export class AngularMaterialModule {}

@@ -1,0 +1,26 @@
+.contains{
+    margin-top: 40px;
+}
+.title{
+    font-size: 1.5em;
+    font-weight: bold;
+    text-align: center;
+}
+.imp{
+    font-size: 1em;
+    width: 100%;
+}
+.mat-raised-button{
+    width: 100%;
+    background-color: #0f3057;
+    color: white;
+}
+.tip{
+    margin-right: 10px;
+}
+th{
+    text-align: center;
+}
+td{
+    text-align: center;
+}

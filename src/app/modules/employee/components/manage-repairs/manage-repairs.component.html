@@ -1,1 +1,169 @@
-<p>manage-repairs works!</p>
+<div class="container contains">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-6 col-xl-6 col-md-6 col-sm-12">
+      <mat-card>
+        <h1 class="title">Formulario de Reparaciones</h1>
+        <form [formGroup]="repairForm">
+          <ng-container *ngIf="createMode == true; else elseT">
+            <mat-form-field appearance="outline" class="imp">
+              <mat-label>Cliente</mat-label>
+              <mat-select formControlName="client">
+                <mat-option
+                  *ngFor="let item of clientsReg"
+                  value="{{ item.dui }}"
+                  >Nombre: {{ item.name }} --- DUI: {{ item.dui }}</mat-option
+                >
+              </mat-select>
+              <mat-icon matSuffix>contacts</mat-icon>
+              <mat-error *ngIf="isFieldValid1('client')" class="error">{{
+                getErrorMessage1("client")
+              }}</mat-error>
+            </mat-form-field>
+          </ng-container>
+          <ng-template #elseT>
+            <mat-form-field appearance="outline" class="imp">
+              <mat-label>Cliente</mat-label>
+              <mat-select formControlName="client">
+                <mat-option value="">{{repairName}}</mat-option>
+              </mat-select>
+              <mat-icon matSuffix>contacts</mat-icon>
+              <mat-error *ngIf="isFieldValid1('client')" class="error">{{
+                getErrorMessage1("client")
+              }}</mat-error>
+            </mat-form-field>
+          </ng-template>
+          <br />
+          <br />
+          <mat-form-field appearance="outline" class="imp">
+            <mat-label>Costo de Reparación</mat-label>
+            <input
+              matInput
+              type="number"
+              step="10.00"
+              autocomplete="off"
+              placeholder="Ej: 45.50"
+              formControlName="cost"
+            />
+            <span matPrefix>$&nbsp;</span>
+            <mat-icon matSuffix>monetization_on</mat-icon>
+            <mat-error *ngIf="isFieldValid1('cost')">{{
+              getErrorMessage1("cost")
+            }}</mat-error>
+          </mat-form-field>
+          <br />
+          <br />
+          <ng-container *ngIf="createMode == true; else elseTemp">
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="onSave()"
+              [disabled]="!repairForm.valid"
+            >
+              <mat-icon class="tip">save</mat-icon>Guardar Reparación
+            </button>
+          </ng-container>
+          <ng-template #elseTemp>
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="onEdit()"
+              [disabled]="!repairForm.valid"
+            >
+              <mat-icon class="tip">create</mat-icon>Modificar Reparación
+            </button>
+          </ng-template>
+        </form>
+      </mat-card>
+    </div>
+  </div>
+  <br />
+  <br />
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-6 col-xl-6 col-md-6 col-sm-12">
+      <mat-card>
+        <h1 class="title">Búsquedas</h1>
+          <mat-form-field appearance="outline" class="imp">
+            <mat-label>Búsqueda por Nombre, Costo o Total a Pagar</mat-label>
+            <input
+              type="text"
+              matInput
+              placeholder="Ej: Juan Gómez ó 48.82"
+              autocomplete="off"
+              [(ngModel)]="filterPost"
+            />
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+      </mat-card>
+    </div>
+  </div>
+  <br>
+  <br>
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-12 col-xl-12 col-md-12 col-sm-12">
+      <ng-container *ngIf="repairs.length != 0; else elseTemplate">
+        <div class="table-responsive">
+          <table class="table table-hover table-dark">
+            <thead>
+              <tr>
+                <th scope="col">Nombre</th>
+                <th scope="col">DUI</th>
+                <th scope="col">Marca</th>
+                <th scope="col">Modelo</th>
+                <th scope="col">Costo</th>
+                <th scope="col">Descuento</th>
+                <th scope="col">Monto del Descuento</th>
+                <th scope="col">Total a Pagar</th>
+                <th scope="col">Editar</th>
+                <th scope="col">Eliminar</th>
+                <th scope="col">Generar Ticket</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let i of repairs | filter:filterPost">
+                <td>{{ i.name }}</td>
+                <td>{{ i.dui }}</td>
+                <td>{{ i.marca }}</td>
+                <td>{{ i.model }}</td>
+                <td>{{ i.cost | currency }}</td>
+                <td>{{ i.desc | percent }}</td>
+                <td>{{ i.amountdesc | currency }}</td>
+                <td>{{ i.pay | currency }}</td>
+                <td>
+                  <button
+                    mat-flat-button
+                    color="primary"
+                    (click)="editRepair(i)"
+                  >
+                    <mat-icon>create</mat-icon>
+                  </button>
+                </td>
+                <td>
+                  <button
+                    mat-flat-button
+                    color="warn"
+                    (click)="deleteRepair(i.id)"
+                  >
+                    <mat-icon>delete_sweep</mat-icon>
+                  </button>
+                </td>
+                <td>
+                  <button
+                    mat-flat-button
+                    color="accent"
+                    (click)="generateTicket(i)"
+                  >
+                    <mat-icon>picture_as_pdf</mat-icon>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-container>
+      <ng-template #elseTemplate>
+        <h1 class="title">No hay reparaciones registradas.</h1>
+      </ng-template>
+    </div>
+  </div>
+</div>
+
