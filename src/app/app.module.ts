@@ -18,6 +18,7 @@ import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
 
+
 //--components imports
 import { AppComponent } from './app.component';
 import { LoginComponent } from './modules/auth/components/login/login.component';

@@ -12,6 +12,9 @@ import { RepairsService } from '../../services/repairs.service';
 import { RepairView } from '../../interfaces/repair-view';
 import { Client } from '../../interfaces/client';
 import { ModalDeleteRepairsComponent } from '../modal-delete-repairs/modal-delete-repairs.component';
+import { PdfMakeWrapper, Txt } from 'pdfmake-wrapper';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
+import { transition } from '@angular/animations';
 @Component({
   selector: 'app-manage-repairs',
   templateUrl: './manage-repairs.component.html',
@@ -25,6 +28,7 @@ export class ManageRepairsComponent implements OnInit {
   reids: string = null;
   repairName = null;
   descrep: number = 0;
+  visible: boolean = false;
   constructor(
     private fb: FormBuilder,
     private dialog: MatDialog,
@@ -86,7 +90,7 @@ export class ManageRepairsComponent implements OnInit {
     if (this.repairForm.valid) {
       const { client, cost } = this.repairForm.value;
       const desc1 = 0.05;
-      const desc2 = 0.10;
+      const desc2 = 0.1;
       this.clientServices.getExistsDUI(client).subscribe((respond) => {
         const clients = respond.docs[0].data() as Client;
         const clientID = respond.docs[0].id;
@@ -186,7 +190,7 @@ export class ManageRepairsComponent implements OnInit {
         });
     }
   }
-  
+
   editRepair(repairs: RepairView) {
     this.reids = repairs.id;
     this.repairName = 'Nombre: ' + repairs.name + ' --- DUI: ' + repairs.dui;
@@ -199,33 +203,148 @@ export class ManageRepairsComponent implements OnInit {
     this.descrep = repairs.desc;
   }
   deleteRepair(id: string) {
-    if(this.createMode == true){
+    if (this.createMode == true) {
       const dialogRef = this.dialog.open(ModalDeleteRepairsComponent);
       dialogRef.afterClosed().subscribe((res) => {
-      if (res) {
-        this.repairServices
-          .deleteRepair(id)
-          .then((res) => {
-            this.loadRepairs();
-            this.toastr.success('Reparación Eliminada', 'Eliminado Exitosamente');
-          })
-          .catch((ex) => {
-            this.toastr.error(
-              'No se pudo completar la petición al servidor',
-              'Error'
-            );
-          });
-      }
-    });
-    }else{
+        if (res) {
+          this.repairServices
+            .deleteRepair(id)
+            .then((res) => {
+              this.loadRepairs();
+              this.toastr.success(
+                'Reparación Eliminada',
+                'Eliminado Exitosamente'
+              );
+            })
+            .catch((ex) => {
+              this.toastr.error(
+                'No se pudo completar la petición al servidor',
+                'Error'
+              );
+            });
+        }
+      });
+    } else {
       this.toastr.error(
         'No se puede eliminar registros porque se esta ejecutando una acción de edición',
         'Error'
       );
     }
   }
+
   generateTicket(repair: RepairView) {
-    
+    if (this.createMode == true) {
+      PdfMakeWrapper.setFonts(pdfFonts);
+      const pdf = new PdfMakeWrapper();
+      pdf.defaultStyle({
+        bold: false,
+        fontSize: 15,
+      });
+      pdf.info({
+        title: repair.name + '_' + repair.dui + '_' + repair.cost,
+        author: 'Taller Mecánico',
+        subject: repair.name + '_' + new Date(),
+      });
+      pdf.pageSize('A4');
+      pdf.pageMargins([40, 60, 40, 60]);
+      pdf.pageOrientation('portrait');
+      pdf.header(
+        new Txt('Taller Mecánico - Planes de Renderos - Tel.2241-8436')
+          .alignment('center')
+          .fontSize(10).end
+      );
+      pdf.footer(new Txt('1 de 1').alignment('center').fontSize(10).end);
+      pdf.add(
+        new Txt('Taller Mecánico').alignment('center').bold().fontSize(20).end
+      );
+      pdf.add(' ');
+      pdf.add(
+        new Txt(
+          '******************************************************************'
+        )
+          .alignment('center')
+          .bold()
+          .fontSize(15)
+          .italics().end
+      );
+      pdf.add(
+        new Txt('Ticket de Reparación').alignment('center').bold().fontSize(15)
+          .end
+      );
+      pdf.add(
+        new Txt(
+          '******************************************************************'
+        )
+          .alignment('center')
+          .bold()
+          .fontSize(15)
+          .italics().end
+      );
+      pdf.add(' ');
+      pdf.add(new Txt('Datos del Cliente').alignment('center').bold().end);
+      pdf.add(' ');
+      pdf.add(new Txt('Nombre: ' + repair.name).alignment('center').end);
+      pdf.add(new Txt('DUI: ' + repair.dui).alignment('center').end);
+      pdf.add(' ');
+      pdf.add(new Txt('Detalles del Vehículo').alignment('center').bold().end);
+      pdf.add(' ');
+      pdf.add(new Txt('Marca: ' + repair.marca).alignment('center').end);
+      pdf.add(new Txt('Modelo: ' + repair.model).alignment('center').end);
+      pdf.add(' ');
+      pdf.add(
+        new Txt('Detalles del Costo de la Reparación')
+          .alignment('center')
+          .bold().end
+      );
+      pdf.add(' ');
+      pdf.add(
+        new Txt('Costo: $' + repair.cost.toFixed(2).toString()).alignment(
+          'center'
+        ).end
+      );
+      pdf.add(
+        new Txt(
+          'Descuento Aplicado: ' +
+            (repair.desc * 100).toFixed(2).toString() +
+            '%'
+        ).alignment('center').end
+      );
+      pdf.add(
+        new Txt(
+          'Monto del Descuento: $' + repair.amountdesc.toFixed(2).toString()
+        ).alignment('center').end
+      );
+      pdf.add(' ');
+      pdf.add(
+        new Txt(
+          '******************************************************************'
+        )
+          .alignment('center')
+          .bold()
+          .fontSize(15)
+          .italics().end
+      );
+      pdf.add(
+        new Txt('Total a Pagar: $' + repair.pay.toFixed(2).toString())
+          .alignment('center')
+          .bold().end
+      );
+      pdf.add(
+        new Txt(
+          '******************************************************************'
+        )
+          .alignment('center')
+          .bold()
+          .fontSize(15)
+          .italics().end
+      );
+      pdf.create().open();
+    } else {
+      this.toastr.error(
+        'No se puede generar el ticket porque se esta ejecutando una acción de edición',
+        'Error'
+      );
+    }
   }
   resetRepairForm() {
     const repair = this.repairForm;

@@ -1,13 +1,25 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { auth, User } from 'firebase';
+import { auth } from 'firebase';
 import { ToastrService } from 'ngx-toastr';
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-
-  constructor(public afAuth: AngularFireAuth,private toastr: ToastrService) { }
+  userData: any;
+  constructor(public afAuth: AngularFireAuth,private toastr: ToastrService) { 
+    this.afAuth.authState.subscribe(user => {
+      if (user) {
+        this.userData = user;
+        localStorage.setItem('user', JSON.stringify(this.userData));
+        JSON.parse(localStorage.getItem('user'));
+      } else {
+        localStorage.setItem('user', null);
+        JSON.parse(localStorage.getItem('user'));
+      }
+    })
+  }
+  
   login(email: string, password:string){
     try {
       const result = this.afAuth.signInWithEmailAndPassword(email,password);
@@ -33,7 +45,10 @@ export class AuthService {
   }
   logout(){
     try {
-      this.afAuth.signOut();
+      this.afAuth.signOut().then(res => {
+        localStorage.setItem('user', null);
+        localStorage.removeItem('user');
+      });
     } catch (error) {
       this.toastr.error('Ocurrió un problema con la petición enviada','Error');
     }
@@ -44,5 +59,9 @@ export class AuthService {
     } catch (error) {
       this.toastr.error('Ocurrió un problema con la petición enviada','Error');
     }
+  }
+  get isLoggedIn(): boolean{
+    const user = JSON.parse(localStorage.getItem('user'));
+    return (user !== null && user.email !== null) ? true : false;
   }
 }

@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-//guards
-import { CanLogguedGuard } from './modules/auth/guards/can-loggued.guard';
 //views
 import { LoginComponent } from './modules/auth/components/login/login.component';
 import { ViewCentralComponent } from './modules/employee/components/view-central/view-central.component';
@@ -20,7 +18,6 @@ const routes: Routes = [
   {
     path: 'employee',
     component: ViewCentralComponent,
-    canActivate: [ CanLogguedGuard ],
     children: [
       {path: 'manage-clients', component: ManageClientsComponent},
       {path: 'manage-repairs', component: ManageRepairsComponent}
