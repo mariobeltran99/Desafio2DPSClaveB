@@ -18,8 +18,6 @@ import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ToastrModule } from 'ngx-toastr';
 
-
-
 //--components imports
 import { AppComponent } from './app.component';
 import { LoginComponent } from './modules/auth/components/login/login.component';
@@ -29,6 +27,8 @@ import { ManageRepairsComponent } from './modules/employee/components/manage-rep
 import { PageNotFoundComponent } from './modules/core/components/page-not-found/page-not-found.component';
 import { ModalSignOutComponent } from './modules/core/components/modal-sign-out/modal-sign-out.component';
 import { ForgotPasswordComponent } from './modules/auth/components/forgot-password/forgot-password.component';
+import { ModalDeleteClientComponent } from './modules/employee/components/modal-delete-client/modal-delete-client.component';
+import { ModalDeleteRepairsComponent } from './modules/employee/components/modal-delete-repairs/modal-delete-repairs.component';
 
 
 
@@ -41,7 +41,9 @@ import { ForgotPasswordComponent } from './modules/auth/components/forgot-passwo
     ManageRepairsComponent,
     PageNotFoundComponent,
     ModalSignOutComponent,
-    ForgotPasswordComponent
+    ForgotPasswordComponent,
+    ModalDeleteClientComponent,
+    ModalDeleteRepairsComponent
   ],
   imports: [
     BrowserModule,

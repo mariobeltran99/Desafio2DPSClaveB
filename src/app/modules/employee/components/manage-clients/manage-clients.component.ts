@@ -5,6 +5,11 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { ToastrService } from 'ngx-toastr';
+import { ClientView } from '../../interfaces/client-view';
+import { ClientsService } from '../../services/clients.service';
+import { ModalDeleteClientComponent } from '../modal-delete-client/modal-delete-client.component';
 
 @Component({
   selector: 'app-manage-clients',
@@ -13,7 +18,13 @@ import {
 })
 export class ManageClientsComponent implements OnInit {
   clientForm: FormGroup;
-  constructor(private fb: FormBuilder) {}
+  createMode: boolean = true;
+  constructor(
+    private fb: FormBuilder,
+    private clientServices: ClientsService,
+    private toastr: ToastrService,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit() {
     this.clientForm = this.fb.group({
@@ -31,15 +42,16 @@ export class ManageClientsComponent implements OnInit {
       ]),
       marca: new FormControl(null, [
         Validators.required,
-        Validators.minLength(3),
+        Validators.minLength(2),
         Validators.maxLength(60),
       ]),
       model: new FormControl(null, [
         Validators.required,
-        Validators.minLength(3),
+        Validators.minLength(2),
         Validators.maxLength(60),
       ]),
     });
+    this.loadClients();
   }
   isFieldValid1(field: string) {
     const client = this.clientForm.get(field);
@@ -66,20 +78,163 @@ export class ManageClientsComponent implements OnInit {
           message = 'Debe tener el formato 00000000-0';
         }
         break;
-      case 'marca' || 'model':
+      case 'marca':
         if (forms.hasError('minlength')) {
-          message = 'Debe contener como mínimo 3 caracteres';
+          message = 'Debe contener como mínimo 2 caracteres';
         } else if (forms.hasError('maxlength')) {
           message = 'Debe contener como máximo 60 caracteres';
         }
-      break;
+        break;
+      case 'model':
+        if (forms.hasError('minlength')) {
+          message = 'Debe contener como mínimo 2 caracteres';
+        } else if (forms.hasError('maxlength')) {
+          message = 'Debe contener como máximo 60 caracteres';
+        }
+        break;
     }
     return message;
   }
-  clients = ['hola'];
   onSave() {
-    if(this.clientForm.valid){
-
+    if (this.clientForm.valid) {
+      const { name, dui, marca, model } = this.clientForm.value;
+      const reg = new RegExp('^\\s');
+      if (
+        reg.test(marca) == true ||
+        reg.test(model) == true ||
+        reg.test(name)
+      ) {
+        this.toastr.warning(
+          'Hay campos rellenados con espacios',
+          'Advertencia'
+        );
+      } else {
+        this.clientServices.getExistsDUI(dui).subscribe((respond) => {
+          const duiCount = respond.docs.length;
+          if (duiCount == 0) {
+            const client = {
+              name: name,
+              dui: dui,
+              marca: marca,
+              model: model,
+              visit: 0,
+            };
+            this.clientServices
+              .saveClient(client)
+              .then((res) => {
+                this.resetClientForm();
+                this.toastr.success(
+                  'Cliente Registrado',
+                  'Enviado Exitosamente'
+                );
+                this.loadClients();
+                this.clientForm.get('name').setValue('');
+              })
+              .catch((ex) => {
+                this.toastr.error(
+                  'No se pudo completar la petición al servidor',
+                  'Error'
+                );
+              });
+          } else {
+            this.toastr.warning('Este dui ya existe', 'Advertencia');
+          }
+        });
+      }
+    }
+  }
+  clients: ClientView[] = [];
+  loadClients() {
+    this.clientServices.getClients().subscribe((respond) => {
+      this.clients = [];
+      respond.docs.forEach((value) => {
+        const data = value.data();
+        const id = value.id;
+        const client: ClientView = {
+          id: id,
+          name: data.name,
+          dui: data.dui,
+          marca: data.marca,
+          model: data.model,
+          visit: data.visit,
+        };
+        this.clients.push(client);
+      });
+    });
+  }
+  cids: string = null;
+  editClient(client: ClientView) {
+    this.cids = client.id;
+    this.clientForm.get('name').setValue(client.name);
+    this.clientForm.get('dui').setValue(client.dui);
+    this.clientForm.controls['dui'].disable();
+    this.clientForm.get('marca').setValue(client.marca);
+    this.clientForm.get('model').setValue(client.model);
+    this.createMode = false;
+  }
+  onEdit() {
+    if (this.clientForm.valid) {
+      const { name, marca, model } = this.clientForm.value;
+      const reg = new RegExp('^\\s');
+      if (
+        reg.test(marca) == true ||
+        reg.test(model) == true ||
+        reg.test(name)
+      ) {
+        this.toastr.warning(
+          'Hay campos rellenados con espacios',
+          'Advertencia'
+        );
+      } else {
+        const client = {
+          name: name,
+          marca: marca,
+          model: model,
+        };
+        this.clientServices
+          .editClientFragment(this.cids, client)
+          .then((res) => {
+            this.toastr.success('Cliente Editado', 'Modificado Exitosamente');
+            this.loadClients();
+            this.createMode = true;
+            this.cids = null;
+            this.clientForm.controls['dui'].enable();
+            this.resetClientForm();
+            this.clientForm.get('name').setValue('');
+          })
+          .catch((ex) => {
+            this.toastr.error(
+              'No se pudo completar la petición al servidor',
+              'Error'
+            );
+          });
+      }
+    }
+  }
+  deleteClient(id: string) {
+    if(this.createMode == true){
+      const dialogRef = this.dialog.open(ModalDeleteClientComponent);
+      dialogRef.afterClosed().subscribe((res) => {
+      if (res) {
+        this.clientServices
+          .deleteClient(id)
+          .then((res) => {
+            this.loadClients();
+            this.toastr.success('Cliente Eliminado', 'Eliminado Exitosamente');
+          })
+          .catch((ex) => {
+            this.toastr.error(
+              'No se pudo completar la petición al servidor',
+              'Error'
+            );
+          });
+      }
+    });
+    }else{
+      this.toastr.error(
+        'No se puede eliminar registros porque se esta ejecutando una acción de edición',
+        'Error'
+      );
     }
   }
   resetClientForm() {
