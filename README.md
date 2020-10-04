@@ -1,6 +1,11 @@
-# Desafio2
+# Desafío 2 - Taller Mecánico
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.0.6.
+
+## Deploy on Firebase
+
+This project running on this link [here](https://taller-mecanico-587b7.web.app/)
+
 
 ## Development server
 

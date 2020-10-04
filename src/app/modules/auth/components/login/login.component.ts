@@ -17,9 +17,9 @@ import { AuthService } from '../../services/auth.service';
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   registerForm: FormGroup;
-  hide1 = false;
-  hide2 = false;
-  hide3 = false;
+  hide1 = true;
+  hide2 = true;
+  hide3 = true;
   constructor(
     private fb: FormBuilder,
     private authServices: AuthService,
